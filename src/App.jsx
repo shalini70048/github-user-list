@@ -1,15 +1,25 @@
 import { useState } from 'react';
-import { userList } from './list'; 
+import { userList } from './list';
 import './App.css';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [contactList] = useState(userList); 
+  const [list,setList] = useState(userList);
 
-  const filteredContacts = contactList.filter((contact) =>
-    contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    contact.username.toLowerCase().includes(searchTerm.toLowerCase())
+  const filterGithubUser = list.filter((user) =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.username.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const deleteHandler = (userId) =>{
+    console.log(userId) 
+    const updatedList = list.filter((user) => {
+      return user.id !== userId
+      
+    })
+    setList(updatedList);
+  }
+
 
   return (
     <div style={{ padding: '30px', backgroundColor: '#f9f9f9', minHeight: '100vh' }}>
@@ -32,11 +42,11 @@ function App() {
         />
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px' }}>
-        {filteredContacts.length > 0 ? (
-          filteredContacts.map((item) => (
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '20px'  }}>
+        {filterGithubUser.length > 0 ? (
+          filterGithubUser.map((item) => (
             <div
-            className='contact-card'
+              className='contact-card'
               key={item.id}
               style={{
                 backgroundColor: '#fff',
@@ -46,8 +56,24 @@ function App() {
                 width: '280px',
                 textAlign: 'center',
                 transition: 'transform 0.2s',
+                position: 'relative',
+                
               }}
             >
+              <button
+                style={{
+                  position: 'absolute',
+                  top: '10px',
+                  right: '15px',
+                  backgroundColor: '#dc3545',
+                  cursor:'pointer',
+                  border:'none',
+                  padding:'4px 8px',
+                  color:'white'
+                  
+                }}
+                onClick={() =>{deleteHandler(item.id)}}
+              >Delete</button>
               <img
                 src={item.image}
                 alt={item.name}
@@ -59,8 +85,8 @@ function App() {
                   border: '3px solid #007bff'
                 }}
               />
-              <h2 style={{ fontSize: '20px', color: '#007bff', margin: '5px 0',  }}>{item.name}</h2>
-              <p style={{ color: '#555', fontStyle: 'italic' ,fontWeight: 'bold' }}>@{item.username}</p>
+              <h2 style={{ fontSize: '20px', color: '#007bff', margin: '5px 0', }}>{item.name}</h2>
+              <p style={{ color: '#555', fontStyle: 'italic', fontWeight: 'bold' }}>@{item.username}</p>
               <p style={{ margin: '10px 0', fontSize: '14px', color: '#333' }}>{item.bio}</p>
 
               <div style={{
@@ -70,9 +96,9 @@ function App() {
                 fontSize: '14px',
                 color: '#444'
               }}>
-                <div><span style={{fontWeight:'bold'  }}>Repos:</span> {item.repos}</div>
-                <div><span style={{fontWeight:'bold'  }}>Followers:</span> {item.followers}</div>
-                <div><span style={{fontWeight:'bold'  }}>Following:</span> {item.following}</div>
+                <div><span style={{ fontWeight: 'bold' }}>Repos:</span> {item.repos}</div>
+                <div><span style={{ fontWeight: 'bold' }}>Followers:</span> {item.followers}</div>
+                <div><span style={{ fontWeight: 'bold' }}>Following:</span> {item.following}</div>
               </div>
             </div>
           ))
